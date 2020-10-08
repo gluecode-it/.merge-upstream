@@ -1,0 +1,31 @@
+name: "Pull upstream with unrealated history"
+description: "Merge changes a branch from a repository to another"
+author: "oliverlorenz"
+branding:
+  icon: git-merge
+  color: yellow
+
+inputs:
+  upstream:
+    description: "Upstream repository owner/name"
+    required: true
+  upstream-branch:
+    description: "Upstream branch to merge from. For example, master"
+    default: "master"
+  branch:
+    description: "Branch to merge to. For example, master"
+    default: "master"
+  token:
+    description: >
+      Personal access sts_session_token
+    default: ${{ github.token }}
+
+runs:
+  using: "composite"
+  steps:
+    - run: |
+        git remote add -f upstream "https://github.com/${{ inputs.upstream }}.git"
+        git pull upstream ${{ inputs.upstream-branch }} --allow-unrelated-histories
+        git checkout -b ${{ inputs.branch }}
+        git push origin ${{ inputs.branch }}
+      shell: bash
